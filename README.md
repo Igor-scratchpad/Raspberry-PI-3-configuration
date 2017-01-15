@@ -15,4 +15,22 @@ Should this become a problem, then it's advisable to replace the PI3 with a bett
  - **hostapd** is responsible of exposing the wifi interface as AP. Part of this configuration is HW-specific and therefore will require adjustments in case one wants to use a different WiFi chip.
  - **interfaces file** configures the bridge: while both the local network interface and the WAN-facing ethernet interface are configured as usual, the intranet ethernet port (from the USB adapter) is bridged with the on-board WiFi interface.
  - **dns masquerade** used to provide IP configuration to clients on the LAN (both wired and wireless).
- - **iptables** provides the natting for the WLAN and firewalls the PI from outside connections. The only port left open is for ssh.
+ - **iptables** provides the natting for the WLAN and firewalls the PI from outside connections. The only port left open is for ssh. The most relevant feature of these rules is that they do not rely on any explicit IP listing, thus they do not require reloading upon change of WAN IP. The file used (rc.local) is probably not the best choice, but it will do, as a start.
+ - **ddclient** updates the information used by DynDNS to resolve the public name.
+
+##**Acknowledgments**
+
+These are the resources I used to put together the configuration.
+
+ 1. HOWTO: Create Wired/Wireless Router with dnsmasq
+ 2. USING YOUR NEW RASPBERRY PI 3 AS A WIFI ACCESS POINT WITH HOSTAPD
+ 3. Setup Wireless Access Point (WAP) with Hostapd
+ 4. Turn any computer into a wireless access point with Hostapd
+
+[1] https://ubuntuforums.org/showthread.php?t=716192
+
+[2] https://frillip.com/using-your-raspberry-pi-3-as-a-wifi-access-point-with-hostapd/
+
+[3] https://www.cyberciti.biz/faq/debian-ubuntu-linux-setting-wireless-access-point/
+
+[4] https://seravo.fi/2014/create-wireless-access-point-hostapd
