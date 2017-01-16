@@ -17,6 +17,10 @@ Should this become a problem, then it's advisable to replace the PI3 with a bett
  - **dns masquerade** used to provide IP configuration to clients on the LAN (both wired and wireless).
  - **iptables** provides the natting for the WLAN and firewalls the PI from outside connections. The only port left open is for ssh. The most relevant feature of these rules is that they do not rely on any explicit IP listing, thus they do not require reloading upon change of WAN IP. The file used (rc.local) is probably not the best choice, but it will do, as a start.
  - **ddclient** updates the information used by DynDNS to resolve the public name.
+ 
+ ###**TODO**
+ 
+ - move the configuration bits into ad-hoc files, where possible, instead of modifying those provided by the distro.
 
 ##**Acknowledgments**
 
