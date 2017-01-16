@@ -1,0 +1,47 @@
+#####################################################
+#                                                   #
+# File: /etc/network/interfaces                     #
+# If desired, change the bridge network, but        #
+# update the dnsmasq configuration file accordingly #
+#                                                   #
+#####################################################
+
+
+# interfaces(5) file used by ifup(8) and ifdown(8)
+
+# Please note that this file is written to be used with dhcpcd
+# For static IP, consult /etc/dhcpcd.conf and 'man dhcpcd.conf'
+
+# Include files from /etc/network/interfaces.d:
+source-directory /etc/network/interfaces.d
+
+# Local interface, same setup as on any other machine
+auto lo
+iface lo inet loopback
+
+# eth0 is the built-in network interface, connected to the ISP
+# same setup as any device using a dynamic IP
+auto eth0
+iface eth0 inet dhcp
+
+
+# eth1 is an USB-to-ethernet adapter, providing connectivity to the LAN
+# It is not configured explicitly because it will be used through the
+# bridge, hence no configuration line for it
+
+
+# wlan0 is the WiFi interface created by hostapd: it is not explicitly
+# configured because, like eth1, it will be used through the bridge
+allow-hotplug wlan0
+iface wlan0 inet manual
+
+ 
+# Bridge between wired lan (eth1) and wifi (wlan0).
+# All devices on the bridge see each other like if they were on the same
+# pysical network.
+auto br0
+iface br0 inet static
+    bridge_ports wlan0 eth1
+    address 192.168.10.1
+    netmask 255.255.255.0
+    network 192.168.10.0
