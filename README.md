@@ -14,6 +14,18 @@ The basic image has several services that are useless for a Gateway setup.
  - **lightdm:** the device works in headless, remote mode, it is intended to be controlled over ssh, so we might as well turn off graphic mode entirely.
  - **avahi-daemon:** I do not have any need for this, so off it goes, but of course ymmv.
  - **triggerhappy:** again, only networking is needed.
+ - **autologin@tty1.service:** no need for serial login to a remote device.
+
+````
+systemctl stop lightdm
+systemctl disable lightdm
+systemctl stop avahi-daemon
+systemctl disable avahi-daemon
+systemctl stop triggerhappy
+systemctl disable triggerhappy
+systemctl stop autologin@tty1.service
+systemctl disable autologin@tty1.service
+````
 
 ###**Basic description of services to configure and enable**
 
