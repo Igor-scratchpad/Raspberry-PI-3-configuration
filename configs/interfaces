@@ -1,6 +1,6 @@
 #####################################################
 #                                                   #
-# File: /etc/network/interfaces.d/interfaces_    #
+# File: /etc/network/interfaces                     #
 # If desired, change the bridge network, but        #
 # update the dnsmasq configuration file accordingly #
 #                                                   #
@@ -24,16 +24,9 @@ iface lo inet loopback
 auto eth0
 iface eth0 inet dhcp
 
-iface eth0:0 inet static
-address 123.123.22.22
-netmask 255.0.0.0
-broadcast 123.255.255.255
-
-
 # eth1 is an USB-to-ethernet adapter, providing connectivity to the LAN
 # It is not configured explicitly because it will be used through the
 # bridge, hence no configuration line for it
-
 
 # wlan0 is the WiFi interface created by hostapd: it is not explicitly
 # configured because, like eth1, it will be used through the bridge
