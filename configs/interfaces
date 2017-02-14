@@ -1,6 +1,6 @@
 #####################################################
 #                                                   #
-# File: /etc/network/interfaces                     #
+# File: /etc/network/interfaces.d/interfaces_    #
 # If desired, change the bridge network, but        #
 # update the dnsmasq configuration file accordingly #
 #                                                   #
@@ -24,6 +24,11 @@ iface lo inet loopback
 auto eth0
 iface eth0 inet dhcp
 
+iface eth0:0 inet static
+address 123.123.22.22
+netmask 255.0.0.0
+broadcast 123.255.255.255
+
 
 # eth1 is an USB-to-ethernet adapter, providing connectivity to the LAN
 # It is not configured explicitly because it will be used through the
@@ -35,13 +40,12 @@ iface eth0 inet dhcp
 allow-hotplug wlan0
 iface wlan0 inet manual
 
- 
 # Bridge between wired lan (eth1) and wifi (wlan0).
 # All devices on the bridge see each other like if they were on the same
 # pysical network.
 auto br0
 iface br0 inet static
-    bridge_ports wlan0 eth1
+    bridge_ports eth1
     address 192.168.10.1
     netmask 255.255.255.0
     network 192.168.10.0
