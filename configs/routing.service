@@ -1,0 +1,11 @@
+#############################################
+#                                           #
+# File: /etc/systemd/system/routing.service #
+#                                           #
+#############################################
+
+[Unit]
+Description=Verification of routing
+
+[Service]
+ExecStart=/usr/sbin/routing.sh
