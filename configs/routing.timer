@@ -1,0 +1,19 @@
+###########################################
+#                                         #
+# File: /etc/systemd/system/routing.timer #
+#                                         #
+# Do:                                     #
+# systemctl enable routing.timer          #
+# systemctl start routing.timer           #
+#                                         #
+###########################################
+
+[Unit]
+Description=Periodically ensure that the connectivity is ok.
+
+[Timer]
+OnBootSec=1m
+OnUnitActiveSec=30s
+
+[Install]
+WantedBy=timers.target
