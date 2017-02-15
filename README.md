@@ -50,7 +50,8 @@ These are the resources I used to put together the configuration.
  2. USING YOUR NEW RASPBERRY PI 3 AS A WIFI ACCESS POINT WITH HOSTAPD
  3. Setup Wireless Access Point (WAP) with Hostapd
  4. Turn any computer into a wireless access point with Hostapd
- 5. External antenna modifications for the Raspberry Pi 3
+ 5. Systemd Timers
+ 6. External antenna modifications for the Raspberry Pi 3
 
 [1] https://ubuntuforums.org/showthread.php?t=716192
 
@@ -60,4 +61,6 @@ These are the resources I used to put together the configuration.
 
 [4] https://seravo.fi/2014/create-wireless-access-point-hostapd
 
-[5] https://dorkbotpdx.org/blog/wramsdell/external_antenna_modifications_for_the_raspberry_pi_3
+[5] https://wiki.archlinux.org/index.php/Systemd/Timers
+
+[6] https://dorkbotpdx.org/blog/wramsdell/external_antenna_modifications_for_the_raspberry_pi_3
