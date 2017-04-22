@@ -3,7 +3,10 @@
 WAN=eth0
 BRIDGE=br0
 LOGFILE=/root/log.txt
-
+PING_URLS="google.fi google.com amazon.com"
+KNOCK_PORT_1=1
+KNOCK_PORT_2=2
+KNOCK_PORT_3=3
 
 # Reset
 Color_Off='\033[0m'       # Text Reset
@@ -99,16 +102,22 @@ function log() {
 
 function test_firewall() {
   log 6 "test firewall"
-  iptables -L | grep ssh
+  iptables -L | grep ${KNOCK_PORT_1}
   if [ $? -ne 0 ] ; then
-    log 3 "No ssh"
+    log 3 "No knock"
     return -1
   fi
   return 0
 }
 
 function ping_test() {
-  ping -w 5 -c 2 google.fi
+  for url in $PING_URLS ; do
+    ping -w 2 -c 1 $url
+    if [ $? -eq 0 ] ; then
+      return 0
+    fi
+  done
+  return -1
 }
 
 function test_network() {
@@ -116,6 +125,7 @@ function test_network() {
   ping_test
   if [ $? -ne 0 ] ; then
     log 4 "No ping, retrying"
+    sleep 5
     ping_test
     if [ $? -ne 0 ] ; then
       log 3 "No ping, failing"
@@ -139,7 +149,6 @@ function firewall_teardown() {
 
 function firewall_setup() {
   ####################### FORWARDING #####################
-
   log 6 "firewall setup"
   # Enable IP forwarding
   echo 1 > /proc/sys/net/ipv4/ip_forward
@@ -154,20 +163,24 @@ function firewall_setup() {
   iptables -A FORWARD -j DROP
 
   ####################### MASQUERADING ########################
-
   # Do the nat
   iptables -t nat -A POSTROUTING -o ${WAN} -j MASQUERADE
-
 
   ###################### INPUT #############################
   # Allow local connections
   iptables -A INPUT -i lo -j ACCEPT
 
   iptables -A INPUT -i ${BRIDGE} -j ACCEPT
-  iptables -A INPUT -p tcp --dport 22 -i ${WAN} -j ACCEPT
   iptables -A INPUT -i ${WAN} -m state --state RELATED,ESTABLISHED -j ACCEPT
+  iptables -A INPUT -i ${WAN} -p tcp --dport ${KNOCK_PORT_1} -j ACCEPT
+  iptables -A INPUT -i ${WAN} -p udp --dport ${KNOCK_PORT_1} -j ACCEPT
+  iptables -A INPUT -i ${WAN} -p tcp --dport ${KNOCK_PORT_2} -j ACCEPT
+  iptables -A INPUT -i ${WAN} -p udp --dport ${KNOCK_PORT_2} -j ACCEPT
+  iptables -A INPUT -i ${WAN} -p tcp --dport ${KNOCK_PORT_3} -j ACCEPT
+  iptables -A INPUT -i ${WAN} -p udp --dport ${KNOCK_PORT_3} -j ACCEPT
+# Do not enable ssh: knockd will turn it on when needed
+#  iptables -A INPUT -p tcp --dport 22 -i ${WAN} -j ACCEPT
   iptables -A INPUT -j DROP
-
 
   ###################### OUTPUT #############################
   iptables -A OUTPUT -j ACCEPT
@@ -187,20 +200,48 @@ function wan_randomize_ip() {
   ifup eth0
 }
 
-set -x
-UPTIME=`cat /proc/uptime | cut -d . -f 1`
-if [ $UPTIME -lt 120 ] ; then
+function normal_test() {
+# Try to get a new IP on boot
+  UPTIME=`cat /proc/uptime | cut -d . -f 1`
+  if [ $UPTIME -lt 120 ] ; then
+    wan_randomize_ip
+  fi
+
+  test_network
+  if [ $? -ne 0 ] ; then
+    wan_reconnect
+  fi
+
+  test_firewall
+  if [ $? -ne 0 ] ; then
+    log 5 "reset wan and firewall"
+    firewall_teardown
+    firewall_setup
+    systemctl restart knockd
+  fi
+}
+
+
+##set -x
+
+# Default to normal test
+if [ -z ${action+x} ]; then
+  action="normal"
+fi
+
+if [ "$action" = "normal" ]; then
+  log 6 "Normal test"
+  normal_test
+elif [ "$action" = "randomize" ]; then
+  log 6 "randomize"
   wan_randomize_ip
-fi
-
-test_network
-if [ $? -ne 0 ] ; then
-  wan_reconnect
-fi
-
-test_firewall
-if [ $? -ne 0 ] ; then
-  log 5 "reset wan and firewall"
+elif [ "$action" = "firewall" ]; then
+  log 6 "firewall"
   firewall_teardown
   firewall_setup
+elif [ "$action" = "knockd" ]; then
+  log 6 "knockd"
+  systemctl restart knockd
 fi
+
+                                 
