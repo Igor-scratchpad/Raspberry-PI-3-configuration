@@ -43,7 +43,7 @@ AllowUsers gw
 ````
 ###**Fixing logging**
 
-The logging will try to happen over the xconsole, but we are in headless mode, so prevent it by commenting out the following lines:
+The logging will try to happen over the xconsole, but we are in headless mode, so prevent it by commenting out the following lines in **/etc/rsyslog.conf**:
 
 ````
 #daemon.*;mail.*;\
