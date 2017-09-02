@@ -41,6 +41,16 @@ systemctl disable autologin@tty1.service
 Add:
 AllowUsers gw
 ````
+###**Fixing logging**
+
+The logging will try to happen over the xconsole, but we are in headless mode, so prevent it.
+
+````
+#daemon.*;mail.*;\
+#       news.err;\
+#       *.=debug;*.=info;\
+#       *.=notice;*.=warn       |/dev/xconsole
+````
 
 ##**Acknowledgments**
 
@@ -52,6 +62,7 @@ These are the resources I used to put together the configuration.
  4. Turn any computer into a wireless access point with Hostapd
  5. Systemd Timers
  6. External antenna modifications for the Raspberry Pi 3
+ 7. Disabling log to xconsole
 
 [1] https://ubuntuforums.org/showthread.php?t=716192
 
@@ -64,3 +75,5 @@ These are the resources I used to put together the configuration.
 [5] https://wiki.archlinux.org/index.php/Systemd/Timers
 
 [6] https://dorkbotpdx.org/blog/wramsdell/external_antenna_modifications_for_the_raspberry_pi_3
+
+[7] https://www.raspberrypi.org/forums/viewtopic.php?f=63&t=134971#p898539
